@@ -7,5 +7,5 @@ if (edad < 13) {
 } else if (edad >= 13 && edad < 18) {
     alert("👦Eres un adolescente, Tienes DNI pero no puedes votar🥹.");
 } else {
-    alert("👨Eres mayor de edad, si puedes votar🎉.");
+    alert("👨Eres mayor de edad, si puedes votar en la ONPE🎉.");
 }

@@ -8,38 +8,45 @@ window.addEventListener('DOMContentLoaded', () => {
     const btnReiniciar = document.getElementById('btnReiniciar');
     const tarjeta = document.getElementById('game-card');
     const avatarImg = document.getElementById("avatar-emocion");
+    const avatarContenedor = document.getElementById("avatar-contenedor");
     const listaPuntajes = document.getElementById("listaPuntajes");
+    const tableroContenedor = document.getElementById("tablero-contenedor");
 
     let numeroSecreto = Math.floor(Math.random() * 100) + 1;
     let intentos = 0;
     let historialIntentos = [];
 
+    avatarImg.addEventListener('error', function() {
+        avatarImg.src = 'avatar-inicio.png';
+    });
+
+    // Cambiado a .innerHTML para poder interpretar las etiquetas <br> de salto de línea
     function actualizarEstado(texto, color, rutaAvatar, animacion = false) {
-        mensaje.textContent = texto;
+        mensaje.innerHTML = texto; 
         mensaje.style.color = color;
         avatarImg.src = rutaAvatar; 
-        avatarImg.style.borderColor = color; 
+        avatarContenedor.style.borderColor = color; 
         tarjeta.style.borderColor = color;   
         
         if (animacion) {
-            avatarImg.style.transform = "translateX(-50%) scale(1.15)";
-            setTimeout(() => avatarImg.style.transform = "translateX(-50%) scale(1)", 300);
+            avatarContenedor.style.transform = "translateX(-50%) scale(1.15)";
+            setTimeout(() => avatarContenedor.style.transform = "translateX(-50%) scale(1)", 300);
         }
     }
 
     function obtenerPista(intento, secreto) {
         let diferencia = Math.abs(intento - secreto);
-        if (diferencia <= 5) return { texto: '🔥 ¡Muy cerca!', tipo: 'fuego' };
-        if (diferencia <= 15) return { texto: '♨️ Caliente', tipo: 'fuego' };
-        if (diferencia <= 30) return { texto: '🌤️ Tibio', tipo: 'frio' };
-        return { texto: '❄️ Frío', tipo: 'frio' };
+        if (diferencia <= 5) return { texto: '🔥 ¡Muy cerca!', color: '#e67e22' }; 
+        if (diferencia <= 15) return { texto: '♨️ Caliente', color: '#e67e22' };   
+        if (diferencia <= 30) return { texto: '🌤️ Tibio', color: '#f1c40f' };      
+        return { texto: '❄️ Frío', color: '#3498db' };                             
     }
 
     function verificarIntento() {
         let valor = Number(inputIntento.value);
         
         if (isNaN(valor) || valor < 1 || valor > 100 || inputIntento.value.trim() === "") {
-            actualizarEstado("⚠️ Pon un número del 1 al 100.", "orange", "avatar-error.png", true);
+            actualizarEstado("⚠️ Pon un número del 1 al 100.", "#e74c3c", "avatar-error.png", true);
             return; 
         }
 
@@ -49,23 +56,26 @@ window.addEventListener('DOMContentLoaded', () => {
         historial.textContent = "Historial: " + historialIntentos.join(", ");
 
         if (valor === numeroSecreto) {
-            actualizarEstado(`🎉 ¡Felicidades! Era el ${numeroSecreto}.`, "#2ecc71", "avatar-ganaste.png", true);
+            actualizarEstado(`🎉 ¡Felicidades!<br>Era el ${numeroSecreto}.`, "#2ecc71", "avatar-ganaste.png", true);
             
             inputIntento.style.display = "none";
             btnAdivinar.style.display = "none";
             btnReiniciar.style.display = "inline-block"; 
             
             tarjeta.style.boxShadow = "0 0 30px rgba(46, 204, 113, 0.5)";
-
             guardarPuntaje(intentos);
         } else {
             let pista = obtenerPista(valor, numeroSecreto);
-            let imgSeleccionada = (pista.tipo === 'fuego') ? 'avatar-fuego.png' : 'avatar-frio.png';
+            let imgSeleccionada = 'avatar-frio.png'; 
             
+            if (pista.color === '#e67e22') imgSeleccionada = 'avatar-fuego.png';
+            if (pista.color === '#f1c40f') imgSeleccionada = 'avatar-tibio.png'; 
+            
+            // ✨ Modificación de formato: Sin paréntesis y con <br> para bajar el icono y estado
             if (valor < numeroSecreto) {
-                actualizarEstado(`⬆️ El número es MAYOR (${pista.texto})`, "#3498db", imgSeleccionada);
+                actualizarEstado(`⬆️ El número es MAYOR<br>${pista.texto}`, pista.color, imgSeleccionada);
             } else {
-                actualizarEstado(`⬇️ El número es MENOR (${pista.texto})`, "#e67e22", imgSeleccionada);
+                actualizarEstado(`⬇️ El número es MENOR<br>${pista.texto}`, pista.color, imgSeleccionada);
             }
         }
         
@@ -81,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
         contador.textContent = "Intentos: 0";
         historial.textContent = "Historial: ";
         
-        actualizarEstado("🎮 ¡Bienvenido! Ingresa un número.", "#aaa", "avatar-inicio.png");
+        actualizarEstado("🎮 ¡Comienza de nuevo!", "#aaa", "avatar-inicio.png");
 
         inputIntento.style.display = "inline-block";
         btnAdivinar.style.display = "inline-block";
@@ -92,6 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
         
         inputIntento.value = "";
         inputIntento.focus();
+        actualizarTableroVisual();
     }
 
     function guardarPuntaje(nuevosIntentos) {
@@ -108,9 +119,11 @@ window.addEventListener('DOMContentLoaded', () => {
         listaPuntajes.innerHTML = "";
 
         if (puntajes.length === 0) {
-            listaPuntajes.innerHTML = "<li style='padding: 5px 0;'>Aún no hay récords guardados. 🚀</li>";
+            tableroContenedor.style.display = "none";
             return;
         }
+
+        tableroContenedor.style.display = "block";
 
         const medallas = ["🥇 1° Lugar", "🥈 2° Lugar", "🥉 3° Lugar"];
         puntajes.forEach((puntos, index) => {
@@ -122,7 +135,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    actualizarEstado("🎮 ¡Bienvenido! Ingresa un número.", "#aaa", "avatar-inicio.png");
+    actualizarEstado("🎮 ¡Ingresa tu primer número!", "#aaa", "avatar-inicio.png");
     console.log("Debug) Número secreto de esta ronda:", numeroSecreto);
     actualizarTableroVisual();
 

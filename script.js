@@ -1,7 +1,5 @@
-// Esperar obligatoriamente a que el HTML esté completamente cargado en memoria
 window.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Selección interna y segura de elementos del DOM
     const inputIntento = document.getElementById("inputIntento");
     const btnAdivinar = document.getElementById('btnAdivinar');
     const mensaje = document.getElementById('mensaje');
@@ -12,18 +10,16 @@ window.addEventListener('DOMContentLoaded', () => {
     const avatarImg = document.getElementById("avatar-emocion");
     const listaPuntajes = document.getElementById("listaPuntajes");
 
-    // 2. Variables de estado del juego
     let numeroSecreto = Math.floor(Math.random() * 100) + 1;
     let intentos = 0;
     let historialIntentos = [];
 
-    // 3. Función unificada para mutar estados (Dirección de Arte Reactiva)
     function actualizarEstado(texto, color, rutaAvatar, animacion = false) {
         mensaje.textContent = texto;
         mensaje.style.color = color;
         avatarImg.src = rutaAvatar; 
-        avatarImg.style.borderColor = color; // Cambia el contorno del avatar
-        tarjeta.style.borderColor = color;   // Sincroniza el contorno de la Card completa
+        avatarImg.style.borderColor = color; 
+        tarjeta.style.borderColor = color;   
         
         if (animacion) {
             avatarImg.style.transform = "translateX(-50%) scale(1.15)";
@@ -31,7 +27,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 4. Medidor de temperatura para feedback de proximidad
     function obtenerPista(intento, secreto) {
         let diferencia = Math.abs(intento - secreto);
         if (diferencia <= 5) return { texto: '🔥 ¡Muy cerca!', tipo: 'fuego' };
@@ -40,12 +35,11 @@ window.addEventListener('DOMContentLoaded', () => {
         return { texto: '❄️ Frío', tipo: 'frio' };
     }
 
-    // 5. Procesamiento principal del tiro o intento
     function verificarIntento() {
         let valor = Number(inputIntento.value);
         
         if (isNaN(valor) || valor < 1 || valor > 100 || inputIntento.value.trim() === "") {
-            actualizarEstado("⚠️ Pon un número del 1 al 100.", "orange", "avatar-inicio.png", true);
+            actualizarEstado("⚠️ Pon un número del 1 al 100.", "orange", "avatar-error.png", true);
             return; 
         }
 
@@ -57,7 +51,6 @@ window.addEventListener('DOMContentLoaded', () => {
         if (valor === numeroSecreto) {
             actualizarEstado(`🎉 ¡Felicidades! Era el ${numeroSecreto}.`, "#2ecc71", "avatar-ganaste.png", true);
             
-            // UX Adjustment: Ocultamos input y botón de tiro; mostramos el de reinicio en el mismo espacio
             inputIntento.style.display = "none";
             btnAdivinar.style.display = "none";
             btnReiniciar.style.display = "inline-block"; 
@@ -80,7 +73,6 @@ window.addEventListener('DOMContentLoaded', () => {
         inputIntento.focus();
     } 
 
-    // 6. Reseteo y limpieza para comenzar una nueva partida
     function reiniciarJuego() {
         numeroSecreto = Math.floor(Math.random() * 100) + 1;
         intentos = 0;
@@ -89,10 +81,8 @@ window.addEventListener('DOMContentLoaded', () => {
         contador.textContent = "Intentos: 0";
         historial.textContent = "Historial: ";
         
-        // Restablece colores base (#aaa) de la interfaz de forma síncrona
         actualizarEstado("🎮 ¡Bienvenido! Ingresa un número.", "#aaa", "avatar-inicio.png");
 
-        // UX Reverse: Volvemos a mostrar el input/adivinar y escondemos el reinicio
         inputIntento.style.display = "inline-block";
         btnAdivinar.style.display = "inline-block";
         btnReiniciar.style.display = "none";
@@ -104,7 +94,6 @@ window.addEventListener('DOMContentLoaded', () => {
         inputIntento.focus();
     }
 
-    // 7. Persistencia de récord (Local Storage)
     function guardarPuntaje(nuevosIntentos) {
         let puntajes = JSON.parse(localStorage.getItem('topPuntajes')) || [];
         puntajes.push(nuevosIntentos);
@@ -133,12 +122,10 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 8. Inicialización por primera vez
     actualizarEstado("🎮 ¡Bienvenido! Ingresa un número.", "#aaa", "avatar-inicio.png");
     console.log("Debug) Número secreto de esta ronda:", numeroSecreto);
     actualizarTableroVisual();
 
-    // 9. Listeners de eventos de usuario
     btnAdivinar.addEventListener('click', verificarIntento);
     btnReiniciar.addEventListener('click', reiniciarJuego);
     inputIntento.addEventListener('keydown', function(event) {

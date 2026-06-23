@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adivina el Número</title>
   <style>
-    /* Todo el CSS limpio y ordenado dentro de la etiqueta style */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       min-height: 100vh;
       display: flex;
+      flex-direction: column; /* Cambiado a columna para acomodar el footer abajo */
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: #eee;
-      padding: 20px;
+      padding: 40px 20px 20px 20px;
     }
 
     .game-card {
@@ -48,7 +48,7 @@
     }
 
     h1 {
-      color: #e94560;
+      color: #ffffff;
       font-size: 1.8rem;
       margin-bottom: 8px;
     }
@@ -70,7 +70,7 @@
       font-size: 18px;
       width: 100px;
       text-align: center;
-      border: 2px solid rgba(233, 69, 96, 0.4);
+      border: 2px solid #ffffff;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.05);
       color: #eee;
@@ -78,30 +78,35 @@
       transition: border-color 0.3s, box-shadow 0.3s;
     }
     input:focus {
-      border-color: #e94560;
-      box-shadow: 0 0 12px rgba(233, 69, 96, 0.3);
+      border-color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
     }
     
     input::-webkit-inner-spin-button,
     input::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type=number] { -moz-appearance: textfield; }
 
-    button {
+    /* Botones Neutrales */
+    button#btnAdivinar, #btnReiniciar {
       padding: 12px 24px;
       font-size: 18px;
-      background-color: #e94560;
       color: white;
-      border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: transform 0.2s, background-color 0.3s;
+      transition: transform 0.2s, background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+      background-color: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
-    button:hover {
-      background-color: #d63d56;
+
+    button#btnAdivinar:hover, #btnReiniciar:hover {
+      background-color: rgba(255, 255, 255, 0.22);
+      border-color: rgba(255, 255, 255, 0.45);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
     }
-    button:active { transform: translateY(1px); }
-    button:disabled {
+
+    button#btnAdivinar:active, #btnReiniciar:active { transform: translateY(1px); }
+    button#btnAdivinar:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
@@ -126,14 +131,14 @@
       margin-top: 25px;
       padding: 15px;
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(233, 69, 96, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 12px;
       width: 100%;
       text-align: center;
     }
 
     #tablero-contenedor h3 {
-      color: #e94560;
+      color: #ffffff;
       font-size: 1.1rem;
       margin-bottom: 10px;
     }
@@ -146,11 +151,24 @@
       font-size: 15px;
     }
 
+    /* 🎨 Estilos para el Footer Minimalista */
+    footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.5px;
+    }
+
+    footer span {
+      color: #e94560; /* Color de acento sutil para la palabra pasión */
+    }
+
     @media (max-width: 480px) {
       .game-card { padding: 50px 20px 25px 20px; }
       .controls { flex-direction: column; align-items: center; }
       input { width: 80%; }
-      button { width: 80%; }
+      button#btnAdivinar, #btnReiniciar { width: 80%; }
+      footer { margin-top: 25px; }
     }
   </style>
 </head>
@@ -159,7 +177,7 @@
   <div class="game-card" id="game-card">
     <img id="avatar-emocion" src="avatar-inicio.png" alt="Avatar">
 
-    <h1>🎯 Adivina el Número</h1>
+    <h1>🎯 Adivina el número</h1>
     <p class="subtitle">Estoy pensando en un número del 1 al 100...</p>
 
     <div class="controls" id="contenedor-controles">
@@ -178,6 +196,10 @@
         </ul>
     </div>
   </div>
+
+  <footer>
+    Hecho con mucha <span>pasión</span> por Gian Carlos Chavez Sanchez 2026
+  </footer>
 
   <script src="script.js"></script>
 </body>

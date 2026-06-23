@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adivina el Número</title>
   <style>
+    /* Todo el CSS limpio y ordenado dentro de la etiqueta style */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -19,15 +20,31 @@
     }
 
     .game-card {
+      position: relative;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(233, 69, 96, 0.3);
       border-radius: 20px;
-      padding: 40px 30px;
+      padding: 60px 30px 30px 30px;
       max-width: 420px;
       width: 100%;
       text-align: center;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       transition: border-color 0.5s, box-shadow 0.5s;
+    }
+
+    #avatar-emocion {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background-color: #302b63;
+      border: 3px solid rgba(233, 69, 96, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
     }
 
     h1 {
@@ -64,7 +81,7 @@
       border-color: #e94560;
       box-shadow: 0 0 12px rgba(233, 69, 96, 0.3);
     }
-    /* Ocultar flechas del input numérico */
+    
     input::-webkit-inner-spin-button,
     input::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type=number] { -moz-appearance: textfield; }
@@ -97,19 +114,40 @@
       transition: font-size 0.3s;
     }
 
+    #contador { margin-bottom: 8px; }
+
     #historial {
-      margin-top: 20px;
       font-size: 14px;
       color: #aaa;
+      margin-bottom: 10px;
     }
 
-    #btnReiniciar {
-      background-color: #0f3460;
-      margin-top: 12px;
+    #tablero-contenedor {
+      margin-top: 25px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(233, 69, 96, 0.15);
+      border-radius: 12px;
+      width: 100%;
+      text-align: center;
+    }
+
+    #tablero-contenedor h3 {
+      color: #e94560;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    #listaPuntajes {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #aaa;
+      font-size: 15px;
     }
 
     @media (max-width: 480px) {
-      .game-card { padding: 30px 20px; }
+      .game-card { padding: 50px 20px 25px 20px; }
       .controls { flex-direction: column; align-items: center; }
       input { width: 80%; }
       button { width: 80%; }
@@ -117,22 +155,28 @@
   </style>
 </head>
 <body>
+
   <div class="game-card" id="game-card">
+    <img id="avatar-emocion" src="avatar-inicio.png" alt="Avatar">
+
     <h1>🎯 Adivina el Número</h1>
     <p class="subtitle">Estoy pensando en un número del 1 al 100...</p>
 
-    <div class="controls">
+    <div class="controls" id="contenedor-controles">
       <input type="number" id="inputIntento" min="1" max="100" placeholder="?">
       <button id="btnAdivinar">Adivinar</button>
+      <button id="btnReiniciar" style="display: none;">🔄 Jugar de nuevo</button>
     </div>
 
     <p id="mensaje"></p>
     <p id="contador">Intentos: 0</p>
     <p id="historial">Historial: </p>
 
-    <button id="btnReiniciar" style="display: none;">
-      🔄 Jugar de nuevo
-    </button>
+    <div id="tablero-contenedor">
+      <h3>🏆 Mejores Récords</h3>
+      <ul id="listaPuntajes">
+        </ul>
+    </div>
   </div>
 
   <script src="script.js"></script>

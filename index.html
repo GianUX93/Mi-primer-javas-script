@@ -114,7 +114,6 @@
 
     button#btnAdivinar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    /* ✨ Ajuste en el mensaje: Agregamos line-height para el salto de línea sutil */
     #mensaje {
       font-size: 24px;
       margin: 20px 0;
@@ -123,7 +122,15 @@
       transition: font-size 0.3s;
     }
 
-    #contador { margin-bottom: 8px; }
+    #contador { margin-bottom: 4px; }
+    
+    /* Etiqueta sutil para el récord de la sesión */
+    #record-container { 
+      font-size: 14px; 
+      color: #f1c40f; 
+      margin-bottom: 12px; 
+      font-weight: 500;
+    }
 
     #historial {
       font-size: 14px;
@@ -193,7 +200,8 @@
     </div>
 
     <p id="mensaje"></p>
-    <p id="contador">Intentos: 0</p>
+    <p id="contador">Intentos: 0 / 10</p>
+    <div id="record-container">🥇 Mejor Récord: --</div>
     <p id="historial">Historial: </p>
 
     <div id="tablero-contenedor">

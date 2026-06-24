@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const btnAdivinar = document.getElementById('btnAdivinar');
     const mensaje = document.getElementById('mensaje');
     const contador = document.getElementById('contador');
+    const recordContainer = document.getElementById('record-container');
     const historial = document.getElementById('historial');
     const btnReiniciar = document.getElementById('btnReiniciar');
     const tarjeta = document.getElementById('game-card');
@@ -12,15 +13,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const listaPuntajes = document.getElementById("listaPuntajes");
     const tableroContenedor = document.getElementById("tablero-contenedor");
 
+    // 🔴 VARIABLE GLOBAL: Mejor puntaje histórico (Persistente con localStorage)
+    let mejorPuntaje = localStorage.getItem('mejorPuntaje') ? Number(localStorage.getItem('mejorPuntaje')) : Infinity;
+    
     let numeroSecreto = Math.floor(Math.random() * 100) + 1;
     let intentos = 0;
+    const MAX_INTENTOS = 10; // 🟡 Límite establecido
     let historialIntentos = [];
 
     avatarImg.addEventListener('error', function() {
         avatarImg.src = 'avatar-inicio.png';
     });
 
-    // Cambiado a .innerHTML para poder interpretar las etiquetas <br> de salto de línea
     function actualizarEstado(texto, color, rutaAvatar, animacion = false) {
         mensaje.innerHTML = texto; 
         mensaje.style.color = color;
@@ -42,16 +46,32 @@ window.addEventListener('DOMContentLoaded', () => {
         return { texto: '❄️ Frío', color: '#3498db' };                             
     }
 
+    // 🟡 FUNCIÓN CORREGIDA: Ahora inyecta la nueva imagen "avatar-game-over.png"
+    function verificarGameOver() {
+        if (intentos >= MAX_INTENTOS) {
+            actualizarEstado(`💀 Game Over<br>El número era el ${numeroSecreto}.`, "#e74c3c", "avatar-game-over.png", true);
+            
+            inputIntento.style.display = "none";
+            btnAdivinar.style.display = "none";
+            btnReiniciar.style.display = "inline-block"; 
+            
+            tarjeta.style.boxShadow = "0 0 30px rgba(231, 76, 60, 0.4)";
+            return true;
+        }
+        return false;
+    }
+
     function verificarIntento() {
         let valor = Number(inputIntento.value);
         
+        // El estado de error por entrada inválida sigue usando "avatar-error.png"
         if (isNaN(valor) || valor < 1 || valor > 100 || inputIntento.value.trim() === "") {
             actualizarEstado("⚠️ Pon un número del 1 al 100.", "#e74c3c", "avatar-error.png", true);
             return; 
         }
 
         intentos++;
-        contador.textContent = "Intentos: " + intentos;
+        contador.textContent = `Intentos: ${intentos} / ${MAX_INTENTOS}`;
         historialIntentos.push(valor);
         historial.textContent = "Historial: " + historialIntentos.join(", ");
 
@@ -63,15 +83,23 @@ window.addEventListener('DOMContentLoaded', () => {
             btnReiniciar.style.display = "inline-block"; 
             
             tarjeta.style.boxShadow = "0 0 30px rgba(46, 204, 113, 0.5)";
+            
+            if (intentos < mejorPuntaje) {
+                mejorPuntaje = intentos;
+                localStorage.setItem('mejorPuntaje', mejorPuntaje);
+                actualizarRecordVisual();
+            }
+
             guardarPuntaje(intentos);
         } else {
+            if (verificarGameOver()) return;
+
             let pista = obtenerPista(valor, numeroSecreto);
             let imgSeleccionada = 'avatar-frio.png'; 
             
             if (pista.color === '#e67e22') imgSeleccionada = 'avatar-fuego.png';
             if (pista.color === '#f1c40f') imgSeleccionada = 'avatar-tibio.png'; 
             
-            // ✨ Modificación de formato: Sin paréntesis y con <br> para bajar el icono y estado
             if (valor < numeroSecreto) {
                 actualizarEstado(`⬆️ El número es MAYOR<br>${pista.texto}`, pista.color, imgSeleccionada);
             } else {
@@ -88,7 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
         intentos = 0;
         historialIntentos = [];
         
-        contador.textContent = "Intentos: 0";
+        contador.textContent = `Intentos: 0 / ${MAX_INTENTOS}`;
         historial.textContent = "Historial: ";
         
         actualizarEstado("🎮 ¡Comienza de nuevo!", "#aaa", "avatar-inicio.png");
@@ -135,9 +163,18 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function actualizarRecordVisual() {
+        if (mejorPuntaje === Infinity) {
+            recordContainer.textContent = "🥇 Mejor Récord: --";
+        } else {
+            recordContainer.textContent = `🥇 Mejor Récord: ${mejorPuntaje} intentos`;
+        }
+    }
+
     actualizarEstado("🎮 ¡Ingresa tu primer número!", "#aaa", "avatar-inicio.png");
     console.log("Debug) Número secreto de esta ronda:", numeroSecreto);
     actualizarTableroVisual();
+    actualizarRecordVisual();
 
     btnAdivinar.addEventListener('click', verificarIntento);
     btnReiniciar.addEventListener('click', reiniciarJuego);

@@ -19,6 +19,9 @@
       padding: 40px 20px 20px 20px;
     }
 
+    /* 📑 PASO 1A: LA TARJETA CONTENEDORA (GAME-CARD)
+       Explicación en Demo: "Al cambiar el estado del juego, manipulamos dinámicamente 
+       el color del borde (borderColor) y la sombra de esta tarjeta para dar feedback visual periférico." */
     .game-card {
       position: relative;
       background: rgba(22, 22, 38, 0.85); 
@@ -33,6 +36,9 @@
       transition: border-color 0.5s, box-shadow 0.5s;
     }
 
+    /* 📑 PASO 1B: EL CONTENEDOR DEL AVATAR (AVATAR-WRAPPER)
+       Explicación en Demo: "Tiene una transición CSS de 0.3s que se activa cuando 
+       le inyectamos la microinteracción de escalado (scale(1.15)) desde JavaScript." */
     .avatar-wrapper {
       position: absolute;
       top: -50px;
@@ -124,7 +130,6 @@
 
     #contador { margin-bottom: 4px; }
     
-    /* Etiqueta sutil para el récord de la sesión */
     #record-container { 
       font-size: 14px; 
       color: #f1c40f; 
